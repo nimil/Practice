@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="ie6 ie"><![endif]-->
+<!--[if IE 7]><html class="ie7 ie"><![endif]-->
+<!--[if IE 8]><html class="ie8 ie"><![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="ja" class="">
+<!--<![endif]-->
+<head>
+	<meta charset="UTF-8">
+	<!--script frontend-->
+	<script type="text/javascript" src="../../../js/lib/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="../../../js/lib/jquery_plugin/bs/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="../../../js/lib/jquery_plugin/ui/jquery-ui.js"></script>
+	<script type="text/javascript" src="../../../js/common/popup.js"></script>
+	<script type="text/javascript" src="../../../js/lib/jquery_alert/jquery.alerts.js"></script>
+	<link id="icon" href="../../../images/s.ico" rel="icon">
+	<!--script 〓system-->
+
+	<!--styles common-->
+	<link href="../../../js/lib/jquery_plugin/bs/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+	<link href="../../../js/lib/jquery_plugin/bs/css/bootstrap-responsive.css" rel="stylesheet" type="text/css">
+	<link href="../../../css/common/bootstrap_setup.css" rel="stylesheet" type="text/css">
+	<link href="../../../js/lib/jquery_plugin/ui/jquery-ui.css" rel="stylesheet" type="text/css">
+	<link href="../../../css/common/popup.css" rel="stylesheet" type="text/css">
+	<link href="../../../css/common/common.css" rel="stylesheet" type="text/css">
+	<link href="../../../css/component/admin/master.css" rel="stylesheet" type="text/css">
+	<link href="../../../js/lib/jquery_alert/jquery.alerts.css" rel="stylesheet" type="text/css">
+	<script type="text/javascript">
+		function openedit(obj){
+		//alert(obj.id);
+				//alert($("#custom_id"));
+				$("#custom_id").val(obj.id);
+				//alert($("#customer_id").val());
+				var param = {
+						width : 600,
+						height : 350,
+						title : "客户编辑",
+						modal : true,
+						buttons : [{
+							text : '保存',
+							click : function() 
+							{
+							update();
+								$(this).dialog('close');
+							},
+							'class' : 'btn btn-primary btn-middle'
+						},
+						{
+							text : '取消',
+							click : function() {
+								$(this).dialog('close');
+							},
+							'class': 'btn btn-inverse btn-middle btn-aft-middle'
+						}
+						]
+					};
+					inputLabel();
+					openPop('customer_dialog',param);
+					}
+					
+		function update(){	
+		var cid=$("#custom_id").val();
+		//alert(cid);
+			var cname=$("#customer_nm").val();
+			//alert(cname);
+			var addr=$("#customer_address").val();
+			var tel=$("#customer_p").val();
+		    var ctype=$("input[name='customer_style']:checked").val();
+		    var status=$("input[name='status']:checked").val();	
+			var json={"cid":cid,"cname":cname,"addr":addr,"tel":tel,"ctype":ctype,"status":status,"optype":"updatecustomer"};
+			//alert(json.status);	
+			$.ajax(  		
+		    		{
+		    			type:"get",
+			    		url:"/OMS/servlet/AdminCustomerAction",
+		    		data:json,
+		    		datatype:"text",
+		    		error:function(){
+		    			alert("出错啦，请稍后再试");
+		    		},
+		    		success:function(data){
+		    			alert(data);	
+		    		},
+		    		}
+		    
+		    );
+		}			
+					
+		var submitS='确定';
+		var cancelC='取消';
+		function inputLabel () {
+			$('#customer_id').val('');
+			$('#customer_nm').val('');
+			$('#customer_address').val('');
+			$('#customer_validate').val('');
+			$('#customer_p').val('');
+		}
+		function clearLabel() {
+			$('#customer_id').val('');
+			$('#customer_nm').val('');
+			$('#customer_address').val('');
+			$('#customer_validate').val('1');
+			$('#customer_p').val('');
+		}
+
+		var flag = true;
+
+		$(function(){
+		//查询
+		$("#search").click(
+				function(){	
+				
+				var ctype=new Array();
+				var i=0;
+					$("input:checkbox[name='item_type_list']:checked").each(
+							function(){	
+							ctype[i++]=$(this).val();		
+							});
+					//获取的dept只是dom对象需要调用方法才可以获得值
+					//alert($(ctype[1]).val());
+					//alert(ctype[1]);
+					var status=new Array();
+					
+					$("input[name='is_valid']:checked").each(
+						function(){
+							status.push($(this).val());
+						}
+						
+					);
+					//alert(status[1]);
+					var uname=$("#cname").val();
+					var tel=$("#ctel").val();
+					var json={"uname":uname,"tel":tel,"ctype":ctype,"status":status,"optype":"selectall"};
+					$("#uname1").val("");
+					$("#tel1").val("");
+					$("#list").html("");
+				  // alert(json.tel);
+				   var mana;
+				   var td = $('#search_result tr');
+					//ajax查询所有
+				   $.ajax(
+					{type:"post",
+					url:"/OMS/servlet/AdminCustomerAction",
+					datatype:"json",
+					data:json,
+					timeout:8000,
+					cache:false,
+					success:function(data1){
+						var dataq=JSON.parse(data1);
+						var status=dataq[0].iS_VALID;
+			    			//alert(status);
+			    			var kind=dataq.cUSTOMER_TYPE;
+			    			
+						//alert(json.length);
+						
+						for(var i=0;i<dataq.length;i++){
+							if(dataq[i].iS_VALID=="1"){
+			    				status='<td class="center_td"><i class="icon icon-effective"></i>有效</td>';
+							}else{
+								status='<td class="center_td"><i class="icon icon-invalid"></i>无效</td>';
+							}
+							kind=dataq[i].cUSTOMER_TYPE;
+						   if(kind=="1"){
+			    			kind="国网";
+			    			}else if(kind=="2"){
+			    			kind="南网";
+			    			}else if(kind=="3"){
+			    			kind="地方";
+			    			}else{
+			    			kind="海外";
+			    			}
+							//alert(status);
+							if(td.length != 10) {	
+							var tr = ['<tr>',
+									'<td>'+dataq[i].cUSTOMER_CD+'</td>',
+									'<td>'+dataq[i].cUSTOMER_NM+'</td>',
+									'<td>'+dataq[i].aDDRESS+'</td>',
+									'<td>'+dataq[i].cONNECT_KIND+'</td>',
+									'<td>'+kind+'</td>',
+									status,
+									'<td class="center_td"><a class="icon icon-edit link-hand-dialog" id='+dataq[i].cUSTOMER_CD+'>编辑</a></td>',
+									'</tr>'
+								];
+								//alert(tr);
+							}	
+							var tr_obj = $(tr.join());
+							tr_obj.appendTo('#search_result tbody');	
+								
+						}
+						
+					},
+					error:function(){
+						alert("出错啦，请稍后再试");
+						
+					}
+					
+					}
+					
+					
+					);
+					
+				}		
+				);
+		
+		
+		
+			$("#clear_input").click(
+				function(){
+					$("#uname1").val("");
+					$("#tel1").val("");
+					$("#list").html("");
+				}		
+				);
+
+			$(document).on('click','.sort',function(e){
+				if($(this).find('span')[0] == null) {
+					flag = false;
+				}
+				$('#search_result').find('.caret').remove();
+				var sor = $('<span class="'+ (flag? 'caret up':'caret') +'"></span>')
+				$(this).append(sor);
+				flag = !flag;
+			});
+
+			$(document).on('dblclick','#search_result td',function(e){
+		                             openedit();
+			})
+			
+			$(document).on('click','.link-hand-dialog',function(e){
+			openedit(this);
+			});
+			
+			$('#tonewuser').on('click',function(e){
+				var param = {
+						width : 600,
+						height : 350,
+						title : "新增客户",
+						modal : true,
+						buttons : [{
+							text : '保存',
+							click : function() {
+								addCustomer();
+								$(this).dialog('close');
+							},
+							'class' : 'btn btn-primary btn-middle'
+						},
+						{
+							text : '取消',
+							click : function() {
+								$(this).dialog('close');
+							},
+							'class': 'btn btn-inverse btn-middle btn-aft-middle'
+						}
+						]
+					};
+					clearLabel();
+					openPop('customer_dialog',param);
+			});
+
+			//点击选中行
+			$(document).on('click','#customer_table td',function(e){
+				$('.row-select').removeClass('row-select');
+				$(this).parent().addClass('row-select');
+			})
+
+
+			/**
+			 * 状态“全选”选中时，其余项设定选中
+			 *
+			 * @private
+			 */
+			$(document).on("click", "#is_valid_all", function() {
+				var check = this.checked;
+				$("input[name = 'is_valid']").each(function() {
+					this.checked = check;
+					if (check){
+						$(this).parent().parent().addClass('table-row-selected')
+					}else{
+						$(this).parent().parent().removeClass('table-row-selected');
+					}
+				});
+			});
+
+			/**
+			 * 状态“全选”外其余项选中全部选中时，设定“全选”为选中状态
+			 *
+			 * @private
+			 */
+			$(document).on("click", "input[name = 'is_valid']", function() {
+				if (this.checked){
+					$(this).parent().parent().addClass('table-row-selected');
+				}else{
+					$(this).parent().parent().removeClass('table-row-selected');
+				}
+				var $subBox = $("input[name = 'is_valid']");
+				var length = $("input[name = 'is_valid']:checked").length;
+				$("#is_valid_all")[0].checked = ($subBox.length == length) ? true : false;
+			});
+
+			/**
+			 * 客户类别“全选”选中时，其余项设定选中
+			 *
+			 * @private
+			 */
+			$(document).on("click", "#type_all", function() {
+				var check = this.checked;
+				$("input[name = 'item_type_list']").each(function() {
+					this.checked = check;
+					if (check){
+						$(this).parent().parent().addClass('table-row-selected')
+					}else{
+						$(this).parent().parent().removeClass('table-row-selected');
+					}
+				});
+			});
+
+			/**
+			 * 客户类别“全选”外其余项选中全部选中时，设定“全选”为选中状态
+			 *
+			 * @private
+			 */
+			$(document).on("click", "input[name = 'item_type_list']", function() {
+				if (this.checked){
+					$(this).parent().parent().addClass('table-row-selected');
+				}else{
+					$(this).parent().parent().removeClass('table-row-selected');
+				}
+				var $subBox = $("input[name = 'item_type_list']");
+				var length = $("input[name = 'item_type_list']:checked").length;
+				$("#type_all")[0].checked = ($subBox.length == length) ? true : false;
+			});
+
+		});
+
+		function deleteContract(el){
+			jConfirm('确认删除吗？', '确认对话框', function(r) {
+				if (r == true) {
+					$(el).parent().parent().remove();
+				}
+			});
+		}
+		
+		function addCustomer() {
+		 var cname=$("#customer_nm").val();
+		  var caddr=$("#customer_address").val();
+			   var ctel=$("#customer_p").val();
+			    var ctype=$("input[name='customer_style']:checked").val();			    
+			    var status=$("input[name='status']:checked").val();		 
+			    var json={"cname":cname,"caddr":caddr,"ctel":ctel,"ctype":ctype,"status":status,"optype":"cadd"};
+			    alert(json.ctype);
+			    $.ajax(  		
+			    		{
+			    			type:"get",
+				    		url:"/OMS/servlet/AdminCustomerAction",
+			    		data:json,
+			    		datatype:"json",
+			    		error:function(){
+			    			alert("出错啦，请稍后再试");
+			    		},
+			    		success:function(data){
+			    			var dataq=JSON.parse(data);
+			    			//alert(data);
+			    			
+			    			var status=dataq.iS_VALID;
+			    			//alert(status);
+			    			var kind=dataq.cUSTOMER_TYPE;
+			    			if(kind=="1"){
+			    			kind="国网";
+			    			}else if(kind=="2"){
+			    			kind="南网";
+			    			}else if(kind=="3"){
+			    			kind="地方";
+			    			}else{
+			    			kind="海外";
+			    			}
+			    			//alert(kind);
+			    			var td = $('#search_result tr');
+			    			if(status=="1"){
+			    				status='<td class="center_td"><i class="icon icon-effective"></i>有效</td>';
+							}else{
+								status='<td class="center_td"><i class="icon icon-invalid"></i>无效</td>';
+							}
+			    			//{"aDDRESS":"花果山","cONNECT_KIND":"16736236","cUSTOMER_CD":"3","cUSTOMER_NM":"孙悟空","cUSTOMER_TYPE":"3","iS_VALID":"1","sTART_DATE":"2017-10-09","uPDATE_DATE":"2017-10-09","uPDATE_USER_ID":"1"}
+							if(td.length != 10) {	
+								var tr = ['<tr>',
+									'<td>'+dataq.cUSTOMER_CD+'</td>',
+									'<td>'+dataq.cUSTOMER_NM+'</td>',
+									'<td>'+dataq.aDDRESS+'</td>',
+									'<td>'+dataq.cONNECT_KIND+'</td>',
+									'<td>'+kind+'</td>',
+									status,
+								'<td class="center_td"><a class="icon icon-edit link-hand-dialog" id='+dataq.cUSTOMER_CD+'">编辑</a></td>"',
+									'</tr>'
+								];
+								var tr_obj = $(tr.join());
+								tr_obj.appendTo('#search_result tbody');
+							}
+			    		}
+			    		
+			    		
+			    		}
+			    
+			    );
+		
+		}
+	</script>
+</head>
+<body>
+<!--▼▼▼header▼▼▼-->
+<header>
+	<div class="navbar navbar-inverse">
+		<div class="navbar-inner">
+			<div class="container">
+				<button data-target=".nav-collapse" data-toggle="collapse" class="btn btn-navbar" type="button">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<!--logo-->
+				<ul class="nav nav-pills logo">
+					<li>
+						<a class="logo" href="../../menu/mainMenuG.jsp" style="padding: 0px;">
+						<img alt="" src="../../../images/logo.png"><span style="padding-left: 10px;padding-top:10px;padding-bottom:5px;color:#EEEEEE;font-size: 23px;font-weight: bold;vertical-align:middle;">订单管理系统</span>
+						</a>
+					</li>
+				</ul>
+				<!--navi-->
+				<div class="nav-collapse collapse">
+					<ul class="nav pull-right user">
+						<li class="dropdown">
+							<a data-toggle="dropdown" class="dropdown-toggle" href="#">
+								<i class="icon-user icon-white unit"></i>张三<b class="caret"></b>
+							</a>
+							<ul class="dropdown-menu" style="z-index:1000000;">
+								<li><a href="../../common/resetPassword.jsp">修改密码</a></li>
+								<li class="divider"></li>
+								<li><a href="../../login.jsp">退出系统</a></li>
+							</ul>
+						</li>
+						<li class="" style="border-left-width: 0px;">
+							<a class="" style="border-left-width: 0px;" data-toggle="dropdown" href="#">
+								<span class="label label-info" style="background:#4f81bd;padding: 3px 4px;width:30px;height: 14px;text-align:center;border-radius:10px;font-size: 13px;">管理</span>
+							</a>
+						</li>
+					</ul>
+					<ul class="nav pull-right navi">
+						<li class=""><a href="../../menu/mainMenuG.jsp">返回主菜单</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</header>
+<!--▼▼▼search▼▼▼-->
+<div class="container-fluid search disabled">
+	<div class="row-fluid">
+	</div>
+</div>
+<!--▼▼▼contents(field type)▼▼▼-->
+<div class="main">
+	<div class="banner" >
+		<span>客户管理</span>
+	</div>
+	<div class="content">
+		<!-- search-table -->
+		<div class="search-table" id="search_table">
+			<span style="background-color: #FFFFFF;font-size: 14px;left: 10px;position: relative;top: 9px;">&nbsp;查询条件&nbsp;</span>
+			<div style="padding:10px;border-width:1px 0;border-style:solid;border-color:#0088CC;">
+					<table class="table-edit" style="width: 90%; margin: 0 auto;">
+						<tr>
+							<td style="width: 100px" class="right_align">
+								客户名称&nbsp;:
+							</td>
+							<td style="width: 260px">
+								<input class="input-xlarge" type="text" id="cname"
+									style="width: 160px; text-align: left;"
+									value="">
+							</td>
+							<td style="width: 100px" class="right_align">
+								联系方式&nbsp;:
+							</td>
+							<td style="width: 260px">
+								<input class="input-xlarge" type="text" id="ctel"
+									style="width: 160px; text-align: left;"
+									value="">
+							</td>
+						</tr>
+						<tr>
+							<td style="" class="right_align">
+								客户类别&nbsp;:
+							</td>
+							<td>
+								<label class="checkbox inline">
+									<input id="type_all" type="checkbox" id="type_all" name="type_all" value="type_all" checked>
+									<span class="input-label">全部</span>
+								</label>
+								<label class="checkbox inline">
+									<input id="type_1" type="checkbox" id="type_1" name="item_type_list" value="1" checked>
+									<span class="input-label">国网</span>
+								</label>
+								<label class="checkbox inline">
+									<input id="type_2" type="checkbox" id="type_2" name="item_type_list" value="2" checked>
+									<span class="input-label">南网</span>
+								</label>
+								<label class="checkbox inline">
+									<input id="type_3" type="checkbox" id="type_3" name="item_type_list" value="3" checked>
+									<span class="input-label">地方</span>
+								</label>
+								<label class="checkbox inline">
+									<input id="type_4" type="checkbox" id="type_4" name="item_type_list" value="4" checked>
+									<span class="input-label">海外</span>
+								</label>
+							</td>
+							<td class="right_align">
+								状态&nbsp;:
+							</td>
+							<td>
+								<label class="checkbox inline">
+									<input id="is_valid_all" type="checkbox" id="is_valid_all" name="is_valid_all" value="ALL">
+									<span class="input-label">全部</span>
+								</label>
+								<label class="checkbox inline">
+									<input id="is_valid_t" type="checkbox" id="is_valid_t" name="is_valid" value="1" checked>
+									<span class="input-label">有效</span>
+								</label>
+								<label class="checkbox inline">
+									<input id="is_valid_f" type="checkbox" id="is_valid_f" name="is_valid" value="0">
+									<span class="input-label">无效</span>
+								</label>
+							</td>
+						</tr>
+					</table>
+				<div class="search-foot-btn">
+					<a class="btn btn-warning btn-small" id="clear_input">重置</a>
+					<a class="btn btn-success btn-small-aft" id="search">查询</a>
+				</div>
+			</div>
+		</div>
+		<!-- search-table -->
+		<div class = "search-result">
+			<div id="" class="top-btn-bar">
+				<a id="tonewuser" class="icon icon-add" href="javascript:void(0);" title="">
+				新增客户</a>
+			</div>
+			<div id="search_result" class="search-result-content" >
+			<table class="table table-striped table-bordered" id="customer_table">
+				<thead>
+					<tr>
+						<th width="10%"><a class="sort " href="javascript:void(0);">客户编号<span class="caret"></span></a></th>
+						<th width="15%"><a class="sort " href="javascript:void(0);">客户名称</a></th>
+						<th width="36%">地址</th>
+						<th width="15%">联系方式</th>
+						<th width="8%"><a class="sort " href="javascript:void(0);">类别</a></th>
+						<th width="8%"><a class="sort " href="javascript:void(0);">状态</a></th>
+						<th width="8%"></th>
+					</tr>
+				</thead>
+				<tbody id="list">
+					
+
+				</tbody>
+		</table>
+	</div>
+</div>
+
+	<div id="pagination" >
+		<div id='project_pagination' class="pagination pagination-centered">
+			<div class="pagination">
+				<ul>
+					<li class="disabled"><a href="#">«</a></li>
+					<li class="active"><a href="#">1</a></li>
+					<li><a href="#">2</a></li>
+					<li><a href="#">3</a></li>
+					<li><a href="#">4</a></li>
+					<li><a href="#">»</a></li>
+				</ul>
+				<ul>
+				<li><span>(1-10/38)</span></li>
+				<li><span>显示条数&nbsp;:&nbsp;</span></li>
+				</ul>
+				<ul>
+					<li class="active"><a href="#">10</a></li>
+					<li class=""><a href="#">30</a></li>
+					<li class=""><a href="#">50</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+</div>
+	<div class="bottom_block">
+		<a class="btn btn-info btn-middle" style="" href="../../menu/mainMenuG.jsp">返回主菜单</a>
+	</div>
+</div>
+
+<div class="pop-dialog" id="customer_dialog">
+	<table class="table-edit table-bordered table-striped">
+		<tr>
+			<td class="right_align"><div class="">客户编号&nbsp;:&nbsp;</div></td>
+			<td colspan="3"><input style="ime-mode: disabled" class="span3 jq-placeholder" type="text"  id="custom_id"  size="10" value="" disabled/> </input></td>
+			<!-- <td class="right_align"><div class="">客户名称&nbsp;:&nbsp;</div></td>
+			<td><input id="customer_nm" class="must" type="text" style="width:120px;"></input></td> -->
+		</tr>
+		<tr>
+			<td class="right_align"><div class="">客户名称&nbsp;:&nbsp;</div></td>
+			<td colspan="3"><input id="customer_nm" type="text" class="must" style="width:300px;"></input></td>
+		</tr>
+		<tr>
+			<td class="right_align"><div class="">地址&nbsp;:&nbsp;</div></td>
+			<td colspan="3"><input id="customer_address" type="text" style="width:400px;"></input></td>
+		</tr>
+		<tr>
+			<td class="right_align"><div class="">联系方式&nbsp;:&nbsp;</div></td>
+			<td colspan="3"><input id="customer_p" type="text" class="must" style="width:400px;"></input></td>
+		</tr>
+		<tr>
+		<td class="right_align"><div class="">类别&nbsp;:&nbsp;</div></td>
+		<td colspan="3">
+				<label class="radio inline">
+						<input type="radio" name="customer_style" value="1" id="customer_style_1" checked></input>国网
+				</label>
+				<label class="radio inline">
+						<input type="radio" name="customer_style" value="2" id="customer_style_2"></input>南网
+				</label>
+				<label class="radio inline">
+						<input type="radio" name="customer_style" value="3" id="customer_style_3"></input>地方
+				</label>
+				<label class="radio inline">
+						<input type="radio" name="customer_style" value="4" id="customer_style_3"></input>海外
+				</label>
+		</td>
+		</tr>
+		<tr>
+			<td class="right_align"><div class="">状态&nbsp;:&nbsp;</div></td>
+			<td colspan="3">
+			<label class="radio inline">
+				<input type="radio" name="status" value="1" checked></input>有效
+					</label>
+					<label class="radio inline">
+				<input type="radio" name="status" value="2"></input>无效
+				</label>
+			</td>
+		</tr>
+	</table>
+</div>
+
+</body>
+</html>

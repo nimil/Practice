@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="ie6 ie"><![endif]-->
+<!--[if IE 7]><html class="ie7 ie"><![endif]-->
+<!--[if IE 8]><html class="ie8 ie"><![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="ja" class="">
+<!--<![endif]-->
+	<head>
+		<meta charset="UTF-8">
+		<!--script frontend-->
+		<script type="text/javascript" src="../../../js/lib/jquery/jquery.min.js"></script>
+		<script type="text/javascript" src="../../../js/lib/jquery_plugin/bs/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="../../../js/lib/jquery_plugin/placeholder/jquery.placeholder.js"></script>
+	<script src="../../../js/common/datepicker.js"></script>
+	<script type="text/javascript" src="../../../js/lib/jquery_plugin/ui/jquery-ui.js"></script>
+	<script type="text/javascript" src="../../../js/common/popup.js"></script>
+	<script type="text/javascript" src="../../../js/lib/jquery_alert/jquery.alerts.js"></script>
+	<link id="icon" href="../../../images/s.ico" rel="icon">
+	<!--script 〓system-->
+
+	<!--styles common-->
+	<link href="../../../js/lib/jquery_plugin/bs/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+	<link href="../../../js/lib/jquery_plugin/bs/css/bootstrap-responsive.css" rel="stylesheet" type="text/css">
+	<link href="../../../css/common/bootstrap_setup.css" rel="stylesheet" type="text/css">
+	<link href="../../../js/lib/jquery_plugin/ui/jquery-ui.css" rel="stylesheet" type="text/css">
+	<link href="../../../css/common/popup.css" rel="stylesheet" type="text/css">
+	<link href="../../../css/common/common.css" rel="stylesheet" type="text/css">
+	<link href="../../../css/common/datepicker.css" rel="stylesheet">
+	<link href="../../../js/lib/jquery_alert/jquery.alerts.css" rel="stylesheet" type="text/css">
+
+	<script type="text/javascript">
+		var submitS='确定';
+		var cancelC='取消';
+		
+		//编辑用户对话框
+		function openEditDialog(obj) {
+			//alert(obj.id);
+			$("#user_id").val(obj.id);
+			
+			var param = {
+					width : 600,
+					height : 320,
+					title : "用户编辑",
+					modal : true,
+					buttons : [{
+						text : '保存',
+						click : function() {
+							update();
+							$(this).dialog('close');
+						},
+						'class' : 'btn btn-primary btn-middle'
+					},
+					{
+						text : '取消',
+						click : function() {
+							$(this).dialog('close');
+						},
+						'class': 'btn btn-inverse btn-middle btn-aft-middle'
+					}
+					]
+				};
+			//调用该方法是设置默认值
+				inputLabel();
+			//弹出对话框的方法
+				openPop('customer_dialog',param);
+		}
+
+		
+		//新增对话框方法  会被新增用户按钮调用,
+		function openNewDialog() {
+			var param = {
+					width : 600,
+					height : 320,
+					title : "新增用户",
+					modal : true,
+					buttons : [{
+						text : '保存',
+						click : function() {
+							addUser();
+							$(this).dialog('close');
+						},
+						'class' : 'btn btn-primary btn-middle'
+					},
+					{
+						text : '取消',
+						click : function() {
+							$(this).dialog('close');
+						},
+						'class': 'btn btn-inverse btn-middle btn-aft-middle'
+					}
+					]
+				};
+				clearLabel();
+				openPop('customer_dialog',param);
+			}
+		
+		
+		
+		//新增用户方法。新增用户之后将新增的用户添加到查询列表中
+		//获取的元素可以在下方html中找到
+			function addUser() {
+			   var uname=$("#user_name").val();
+			   var tel=$("#user_telephone").val();
+			    var dept=$("input[name='flg']:checked").val();
+			    var status=$("input[name='status']:checked").val();		 
+			    var json={"uname":uname,"tel":tel,"dept":dept,"status":status,"optype":"useradd"};
+			    //alert(json.uname);
+			    $.ajax(  		
+			    		{
+			    			type:"get",
+				    		url:"/OMS/servlet/AdminUserAction",
+			    		data:json,
+			    		datatype:"json",
+			    		error:function(){
+			    			alert("出错啦，请稍后再试");
+			    		},
+			    		success:function(data){
+			    			var dataq=JSON.parse(data);
+			    			//alert(data);
+			    			//alert(dataq.user_cd);
+			    			var status=dataq.is_valid;
+			    			var td = $('#search_result tr');
+			    			if(status=="有效"){
+			    				status='<td class="center_td"><i class="icon icon-effective"></i>有效</td>';
+							}else{
+								status='<td class="center_td"><i class="icon icon-invalid"></i>无效</td>';
+							}
+			    			//{"is_valid":"T","update_date":"2017-09-28","update_user_id":"1","user_cd":"14","user_nm":"拿蓝","user_owner_flg":"M","user_phone":"1122221","user_pswd":"111"}
+							if(td.length != 10) {	
+								var tr = ['<tr>',
+									'<td>'+dataq.user_cd+'</td>',
+									'<td>'+dataq.user_nm+'</td>',
+									'<td>'+dataq.user_phone+'</td>',
+									'<td>'+dataq.user_owner_flg+'</td>',
+									status,
+									'<td class="center_td"><a class="icon icon-edit link-hand-dialog" id='+dataq.user_cd+'">编辑</a></td>"',
+									'</tr>'
+								];
+								var tr_obj = $(tr.join());
+								tr_obj.appendTo('#search_result tbody');
+							}
+			    		
+			    		
+			    		},
+			    		
+			    		
+			    		}
+			    
+			    );
+			    
+			    
+				
+			}
+
+			var flag = true;
+
+			
+			//JQ
+			$(document).ready(function(){
+			
+				
+				
+				//查询所有
+				$("#search").click(
+				function(){	
+				
+				var dept=new Array();
+				var i=0;
+					$("input:checkbox[name='owner_flg']:checked").each(
+					
+							function(){	
+							dept[i++]=$(this).val();		
+							});
+					//获取的dept只是dom对象需要调用方法才可以获得值
+					//alert($(dept[1]).val());
+					//alert(dept[1]);
+					var status=new Array();
+					
+					$("input[name='is_valid']:checked").each(
+						function(){
+							status.push($(this).val());
+						}
+						
+					);
+					//alert(status[1]);
+					var uname=$("#uname1").val();
+					var tel=$("#tel1").val();
+					var json={"uname":uname,"tel":tel,"dept":dept,"status":status,"optype":"selectall"};
+					$("#uname1").val("");
+					$("#tel1").val("");
+					$("#list").html("");
+				   //alert(tel);
+				   var mana;
+				   var td = $('#search_result tr');
+					//ajax查询所有
+				   $.ajax(
+					{type:"post",
+					url:"/OMS/servlet/AdminUserAction",
+					datatype:"json",
+					data:json,
+					timeout:8000,
+					cache:false,
+					success:function(data1){
+						var json=JSON.parse(data1);
+						//alert(json.length);
+						//{"is_valid":"T","update_date":"2017-09-28","update_user_id":"1","user_cd":"14","user_nm":"拿蓝","user_owner_flg":"M","user_phone":"1122221","user_pswd":"111"}
+						for(var i=0;i<json.length;i++){
+							if(json[i].is_valid=="T"){
+			    				status='<td class="center_td"><i class="icon icon-effective"></i>有效</td>';
+							}else{
+								status='<td class="center_td"><i class="icon icon-invalid"></i>无效</td>';
+							}
+							if(json[i].user_owner_flg=="M"){
+								mana="管理";
+							}else if (json[i].user_owner_flg=="S"){
+								mana="业务";
+							}else{
+								mana="财务";
+							}
+							//alert(status);
+							if(td.length != 10) {	
+								var tr = ['<tr>',
+									'<td>'+json[i].user_cd+'</td>',
+									'<td>'+json[i].user_nm+'</td>',
+									'<td>'+json[i].user_phone+'</td>',
+									'<td>'+mana+'</td>',
+									status,
+									'<td class="center_td"><a class="icon icon-edit link-hand-dialog" id='+json[i].user_cd+' >编辑</a></td>',
+									'</tr>'
+								];
+								//alert(tr);
+							}	
+							var tr_obj = $(tr.join());
+							tr_obj.appendTo('#search_result tbody');	
+								
+						}
+						
+					},
+					error:function(){
+						alert("出错啦，请稍后再试");
+						
+					}
+					
+					}
+					
+					
+					);
+					
+				}		
+				);
+				
+				
+				
+				//重置按钮清除
+				$("#clear_input").click(
+				function(){
+					$("#uname1").val("");
+					$("#tel1").val("");
+					$("#list").html("");
+				}		
+				);
+				
+				
+				$(document).on('click','.sort',function(e){
+					if($(this).find('span')[0] == null) {
+						flag = false;
+					}
+					$('#search_result').find('.caret').remove();
+					var sor = $('<span class="'+ (flag? 'caret up':'caret') +'"></span>')
+					$(this).append(sor);
+					flag = !flag;
+				});
+				//调用创建对象，弹出对话框
+				$(document).on('dblclick','#search_result td',function(e){
+					openEditDialog(this);
+				});
+				$(document).on('click','.link-hand-dialog',function(e){
+					openEditDialog(this);
+				});
+				
+				
+				//开启新增对话框的js
+				$('#tonewuser').on('click',function(e){
+					openNewDialog();
+				});
+				
+				
+				
+				
+				//点击选中行
+				$(document).on('click','#user_table td',function(e){
+					$('.row-select').removeClass('row-select');
+					$(this).parent().addClass('row-select');
+				})
+
+				/**
+				 * 状态“全选”选中时，其余项设定选中
+				 *
+				 * @private
+				 */
+				 $("#update111").click(
+							function(){
+								alert();
+							}		
+							);
+				
+				
+				$(document).on("click", "#is_valid_all", function() {
+					var check = this.checked;
+					$("input[name = 'is_valid']").each(function() {
+						this.checked = check;
+						if (check){
+							$(this).parent().parent().addClass('table-row-selected')
+						}else{
+							$(this).parent().parent().removeClass('table-row-selected');
+						}
+					});
+				});
+
+				/**
+				 * 状态“全选”外其余项选中全部选中时，设定“全选”为选中状态
+				 *
+				 * @private
+				 */
+				$(document).on("click", "input[name = 'is_valid']", function() {
+					if (this.checked){
+						$(this).parent().parent().addClass('table-row-selected');
+					}else{
+						$(this).parent().parent().removeClass('table-row-selected');
+					}
+					var $subBox = $("input[name = 'is_valid']");
+					var length = $("input[name = 'is_valid']:checked").length;
+					$("#is_valid_all")[0].checked = ($subBox.length == length) ? true : false;
+				});
+
+				/**
+				 * 所属部门“全选”选中时，其余项设定选中
+				 *
+				 * @private
+				 */
+				$(document).on("click", "#owner_flg_all", function() {
+					var check = this.checked;
+					$("input[name = 'owner_flg']").each(function() {
+						this.checked = check;
+						if (check){
+							$(this).parent().parent().addClass('table-row-selected')
+						}else{
+							$(this).parent().parent().removeClass('table-row-selected');
+						}
+					});
+				});
+			
+				/**
+				 * 所属部门“全选”外其余项选中全部选中时，设定“全选”为选中状态
+				 *
+				 * @private
+				 */
+				$(document).on("click", "input[name = 'owner_flg']", function() {
+					if (this.checked){
+						$(this).parent().parent().addClass('table-row-selected');
+					}else{
+						$(this).parent().parent().removeClass('table-row-selected');
+					}
+					var $subBox = $("input[name = 'owner_flg']");
+					var length = $("input[name = 'owner_flg']:checked").length;
+					$("#owner_flg_all")[0].checked = ($subBox.length == length) ? true : false;
+				});
+			});
+
+			function deleteContract(el){
+				jConfirm('确认删除吗？', '确认对话框', function(r) {
+					if (r == true) {
+						$(el).parent().parent().remove();
+					}
+				});
+			}
+			
+			function update(){
+			var uid=$("#user_id").val();
+			var uname=$("#user_name").val();
+			var tel=$("#user_telephone").val();
+		    var dept=$("input[name='flg']:checked").val();
+		    var status=$("input[name='status']:checked").val();	
+			var json={"uid":uid,"uname":uname,"tel":tel,"dept":dept,"status":status,"optype":"updateuser"};
+			//alert(json.dept);	
+			$.ajax(  		
+		    		{
+		    			type:"get",
+			    		url:"/OMS/servlet/AdminUserAction",
+		    		data:json,
+		    		datatype:"text",
+		    		error:function(){
+		    			alert("出错啦，请稍后再试");
+		    		},
+		    		success:function(data){
+		    			alert(data);	
+		    		},
+		    		}
+		    
+		    );
+				
+			}
+			
+			function inputLabel () {
+				$('#user_id').val();
+				$('#user_name').val();
+				$('#user_mail').val();
+				$('#user_telephone').val();
+			}
+			
+			
+			
+			function clearLabel() {
+				$('#user_id').val('');
+				$('#user_name').val('');
+				$('#user_mail').val('');
+				$('#user_telephone').val('');
+			}
+		</script>
+	</head>
+<body>
+<!--▼▼▼header▼▼▼-->
+<header>
+	<div class="navbar navbar-inverse">
+		<div class="navbar-inner">
+			<div class="container">
+				<button data-target=".nav-collapse" data-toggle="collapse" class="btn btn-navbar" type="button">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<!--logo-->
+				<ul class="nav nav-pills logo">
+					<li>
+						<a class="logo" href="/OMS/pages/menu/mainMenuG.jsp" style="padding: 0px;">
+						<img alt="" src="../../../images/logo.png"><span style="padding-left: 10px;padding-top:10px;padding-bottom:5px;color:#EEEEEE;font-size: 23px;font-weight: bold;vertical-align:middle;">订单管理系统</span>
+						</a>
+					</li>
+				</ul>
+				<!--navi-->
+				<div class="nav-collapse collapse">
+					<ul class="nav pull-right user">
+						<li class="dropdown">
+							<a data-toggle="dropdown" class="dropdown-toggle" href="#">
+								<i class="icon-user icon-white unit"></i>张三<b class="caret"></b>
+							</a>
+							<ul class="dropdown-menu" style="z-index:1000000;">
+								<li><a href="/OMS/pages/common/resetPassword.jsp">修改密码</a></li>
+								<li class="divider"></li>
+								<li><a href="../../login.html">退出系统</a></li>
+							</ul>
+						</li>
+						<li class="" style="border-left-width: 0px;">
+							<a class="" style="border-left-width: 0px;" data-toggle="dropdown" href="#">
+								<span class="label label-info" style="background:#4f81bd;padding: 3px 4px;width:30px;height: 14px;text-align:center;border-radius:10px;font-size: 13px;">管理</span>
+							</a>
+						</li>
+					</ul>
+					<ul class="nav pull-right navi">
+						<li class=""><a href="/OMS/pages/menu/mainMenuG.jsp">返回主菜单</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</header>
+	<!--▼▼▼search▼▼▼-->
+	<div class="container-fluid search disabled">
+		<div class="row-fluid">
+		</div>
+	</div>
+	<!--▼▼▼contents(field type)▼▼▼-->
+	<div class="main">
+		<div class="banner">
+			<span>用户管理</span>
+		</div>
+		<div class="content">
+			<!-- search-table -->
+			<div class="search-table" id="search_table">
+				<span style="background-color: #FFFFFF;font-size: 14px;left: 10px;position: relative;top: 9px;">&nbsp;查询条件&nbsp;</span>
+				<div style="padding:10px;border-width:1px 0;border-style:solid;border-color:#0088CC;">
+						<table class="table-edit" style="width: 90%; margin: 0 auto;">
+							<tr>
+								<td style="width: 100px" class="right_align">
+									用户名&nbsp;:
+								</td>
+								<td style="width: 260px">
+									<input class="input-xlarge" type="text" id="uname1"
+										style="width: 160px; text-align: left;"
+										value="">
+								</td>
+								<td style="width: 100px" class="right_align" >
+									联系电话&nbsp;:
+								</td>
+								<td style="width: 260px">
+									<input class="input-xlarge" type="text" id="tel1"
+										style="width: 160px; text-align: left; ime-mode: disabled"
+										value="">
+								</td>
+							</tr>
+							<tr>
+								<td class="right_align">
+									所属部门&nbsp;:
+								</td>
+								<td>
+									<label class="checkbox inline">
+										<input id="owner_flg_all" type="checkbox" id="owner_flg_all" name="owner_flg_all" value="ALL" checked>
+										<span class="input-label">全部</span>
+									</label>
+									<label class="checkbox inline">
+										<input id="owner_flg_M" type="checkbox" id="owner_flg_M" name="owner_flg" value="M" checked>
+										<span class="input-label">管理</span>
+									</label>
+									<label class="checkbox inline">
+										<input id="owner_flg_S" type="checkbox" id="owner_flg_S" name="owner_flg" value="S" checked>
+										<span class="input-label">业务</span>
+									</label>
+									<label class="checkbox inline">
+										<input id="owner_flg_F" type="checkbox" id="owner_flg_F" name="owner_flg" value="F" checked>
+										<span class="input-label">财务</span>
+									</label>
+								</td>
+								<td class="right_align">
+									状态&nbsp;:
+								</td>
+								<td>
+									<label class="checkbox inline">
+										<input id="is_valid_all" type="checkbox" id="is_valid_all" name="is_valid_all" value="ALL">
+										<span class="input-label">全部</span>
+									</label>
+									<label class="checkbox inline">
+										<input id="is_valid_t" type="checkbox" id="is_valid_t" name="is_valid" value="T" checked>
+										<span class="input-label">有效</span>
+									</label>
+									<label class="checkbox inline">
+										<input id="is_valid_f" type="checkbox" id="is_valid_f" name="is_valid" value="F">
+										<span class="input-label">无效</span>
+									</label>
+								</td>
+							</tr>
+						</table>
+					<div class="search-foot-btn">
+						<a class="btn btn-warning btn-small" id="clear_input">重置</a>
+						<a class="btn btn-success btn-small-aft" id="search">查询</a>
+					</div>
+				</div>
+			</div>
+			<!-- search-table -->
+			<div id="" style="float: right;margin-top:20px;">
+				<a id="tonewuser" class="icon icon-add" href="javascript:void(0);" title=""
+					style="margin-right: 10px">新增用户</a>
+				<div style="clear:both;"></div>
+			</div>
+
+			<div class = "search-result">
+				<div id="search_result" style="padding:10px;margin-top:-10px;">
+				<table class="table table-striped table-bordered" style="background-color:#E4F4CB;" id="user_table">
+					<thead>
+						<tr>
+							<th style="width:15%;height:25px;"><a class="sort">用户编号<span class="caret"></span></a></th>
+							<th style="width:25%;"><a class="sort">用户名</a></th>
+							<th style="width:25%;"><a class="sort">联系电话</a></th>
+							<th style="width:15%;"><a class="sort">所属部门</a></th>
+							<th style="width:10%;"><a class="sort">状态</a></th>
+							<th style="width:10%;"></th>
+						</tr>
+					</thead>
+					<tbody id="list">
+						
+						
+						
+					</tbody>
+				</table>
+			</div>
+					</div>
+
+	<div id="pagination" style="align:center;margin-top:-10px;">
+		<div id='project_pagination' class="pagination pagination-centered">
+			<div class="pagination">
+				<ul>
+					<li class="disabled"><a href="#">«</a></li>
+					<li class="active"><a href="#">1</a></li>
+					<li><a href="#">2</a></li>
+					<li><a href="#">3</a></li>
+					<li><a href="#">4</a></li>
+					<li><a href="#">»</a></li>
+				</ul>
+				<ul>
+					<li><span>(1-10/38)</span></li>
+					<li><span>显示条数&nbsp;:&nbsp;</span></li>
+				</ul>
+				<ul>
+					<li class="active"><a href="#">10</a></li>
+					<li class=""><a href="#">30</a></li>
+					<li class=""><a href="#">50</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+	<div class="bottom_block">
+			<a class="btn btn-info btn-middle" style="" href="/OMS/pages/menu/mainMenuG.jsp">返回主菜单</a>
+	</div>
+</div>
+
+
+<!--这是新增和编辑用户的对话框  默认不显示-->
+
+
+<div id="customer_dialog" style="display:none;">
+	<table class="table-edit table-bordered table-striped" style="width:100%;border-collapse:collapse;">
+		<tbody>
+			<tr>
+				<td class="right_align"><div class="  ">用户编号&nbsp;:&nbsp;</div></td>
+				<td> <input style="ime-mode: disabled" class="span3 jq-placeholder" type="text"  id="user_id"  size="10" value="" disabled/> </td>
+			</tr>
+			<tr>
+				<td class="right_align"><div class="">用户名&nbsp;:&nbsp;</div></td>
+				<td><input style="" type='text' size="10"  class="span3 jq-placeholder must" id="user_name" ></td>
+			</tr>
+			<tr>
+				<td class="right_align"><div class="">联系电话&nbsp;:&nbsp;</div></td>
+				<td><input style="ime-mode: disabled" type='text' size="10"  class="span3 jq-placeholder must" id="user_telephone" value=""></td>
+			</tr>
+			<tr>
+				<td class="right_align"><div class="">所属部门&nbsp;:&nbsp;</div></td>
+				<td>
+					<label class="radio inline">
+						<input type="radio" name="flg" value="1" checked="true"></input>管理
+					</label>
+					<label class="radio inline">
+						<input type="radio" name="flg" value="2"></input>业务
+					</label>
+					<label class="radio inline">
+						<input type="radio" name="flg" value="3"></input>财务
+					</label>
+				</td>
+			</tr>
+			<tr>
+				<td class="right_align"><div class="">状态&nbsp;:&nbsp;</div></td>
+				<td>
+					<label class="radio inline">
+						<input type="radio" name="status" value="1" checked="true"></input>有效
+					</label>
+					<label class="radio inline">
+						<input type="radio" name="status" value="2"></input>无效
+					</label>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</body>
+</html>

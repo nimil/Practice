@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="ie6 ie"><![endif]-->
+<!--[if IE 7]><html class="ie7 ie"><![endif]-->
+<!--[if IE 8]><html class="ie8 ie"><![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="ja" class="">
+<!--<![endif]-->
+<head>
+	<meta charset="UTF-8">
+	<!--script frontend-->
+	<script type="text/javascript" src="../../../js/lib/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="../../../js/lib/jquery_plugin/bs/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="../../../js/lib/jquery_plugin/placeholder/jquery.placeholder.js"></script>
+	<script src="../../../js/MonthPicker/WdatePicker.js"></script>
+	<script type="text/javascript" src="../../../js/lib/jquery_plugin/ui/jquery-ui.js"></script>
+	<script type="text/javascript" src="../../../js/common/popup.js"></script>
+	<script type="text/javascript" src="../../../js/lib/jquery_alert/jquery.alerts.js"></script>
+	<script type="text/javascript" src="../../../js/component/orderUpdate.js"></script>
+	<script type="text/javascript" src="../../../js/common/monthPicker.js"></script>
+	<link id="icon" href="../../../images/s.ico" rel="icon">
+
+	<!--script 〓system-->
+
+	<!--styles common-->
+	<link href="../../../js/lib/jquery_plugin/bs/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+	<link href="../../../js/lib/jquery_plugin/bs/css/bootstrap-responsive.css" rel="stylesheet" type="text/css">
+	<link href="../../../css/common/bootstrap_setup.css" rel="stylesheet" type="text/css">
+	<link href="../../../js/lib/jquery_plugin/ui/jquery-ui.css" rel="stylesheet" type="text/css">
+	<link href="../../../css/common/common.css" rel="stylesheet" type="text/css">
+	<link href="../../../css/common/datepicker.css" rel="stylesheet">
+	<link href="../../../css/common/popup.css" rel="stylesheet" type="text/css">
+	<link href="../../../js/lib/jquery_alert/jquery.alerts.css" rel="stylesheet" type="text/css">
+	<link href="../../../css/common/monthPicker.css" rel="stylesheet" type="text/css">
+
+	<script type="text/javascript">
+		function changeMonth(id) {
+			dateSelect($('#'+id).val(), function(year, month){
+				$('#'+id).val(year + month);
+			});
+		}
+	</script>
+</head>
+<body>
+<!--▼▼▼header▼▼▼-->
+<header>
+	<div class="navbar navbar-inverse">
+		<div class="navbar-inner">
+			<div class="container">
+				<button data-target=".nav-collapse" data-toggle="collapse" class="btn btn-navbar" type="button">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<!--logo-->
+				<ul class="nav nav-pills logo">
+					<li>
+						<a class="logo" href="../../menu/mainMenuG.html" style="padding: 0px;">
+						<img alt="" src="../../../images/logo.png"><span style="padding-left: 10px;padding-top:10px;padding-bottom:5px;color:#EEEEEE;font-size: 23px;font-weight: bold;vertical-align:middle;">订单管理系统</span>
+						</a>
+					</li>
+				</ul>
+				<!--navi-->
+				<div class="nav-collapse collapse">
+					<ul class="nav pull-right user">
+						<li class="dropdown">
+							<a data-toggle="dropdown" class="dropdown-toggle" href="#">
+								<i class="icon-user icon-white unit"></i>张三<b class="caret"></b>
+							</a>
+							<ul class="dropdown-menu" style="z-index:1000000;">
+								<li><a href="../../common/resetPassword.html">修改密码</a></li>
+								<li class="divider"></li>
+								<li><a href="../../login.html">退出系统</a></li>
+							</ul>
+						</li>
+						<li class="" style="border-left-width: 0px;">
+							<a class="" style="border-left-width: 0px;" data-toggle="dropdown" href="#">
+								<span class="label label-info" style="background:#4f81bd;padding: 3px 4px;width:30px;height: 14px;text-align:center;border-radius:10px;font-size: 13px;">管理</span>
+							</a>
+						</li>
+					</ul>
+					<ul class="nav pull-right navi">
+						<li class=""><a href="../../menu/mainMenuG.html">返回主菜单</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</header>
+<!--▼▼▼search▼▼▼-->
+<div class="container-fluid search disabled">
+	<div class="row-fluid">
+	</div>
+</div>
+<!--▼▼▼contents(field type)▼▼▼-->
+<div class="main">
+	<div class="banner">
+		<span>订单信息编辑</span>
+	</div>
+	<div class="content">
+		<div style="margin:10px 0;padding:5px 20px;">
+			<div class="edit-content" style="margin-bottom: 0px;border-top:1px solid #0088CC;padding-top:10px;">
+		<!-- 		<table class="edit-table" style="margin: 0 auto;"> -->
+				<table class="edit-table" style="width:95%">
+					<tbody>
+						<tr>
+							<td width="60%">
+								<table>
+									<tbody>
+										<tr>
+											<td class="right_align">合同号&nbsp;:&nbsp;</td>
+											<td colspan="3"><input class="input-xlarge" type="text"
+													style="width: 120px;ime-mode: disabled"
+													value="">－<input class="input-xlarge" type="text" value="001" disabled
+													style="width: 30px;;ime-mode: disabled"
+													value="">
+											</td>
+										</tr>
+										<tr>
+											<td class="right_align">业务员&nbsp;:&nbsp;</td>
+											<td colspan="3">
+												<table>
+													<tr>
+														<td>
+															<i id="user_search" class="icon icon-search" style="background-position:0 0;padding-top:0;height:20px;width:20px;padding-left:0;" title="查询"></i>
+														</td>
+														<td>
+															<input type="text" disabled style="width:80px;" id="user_name"></input>
+														</td>
+														<td>
+															&nbsp;&nbsp;&nbsp;&nbsp;<span>代理商&nbsp;:&nbsp;</span>
+														</td>
+														<td>
+															<i id="agency_search" class="icon icon-search"
+															style="background-position: 0 0;padding-top: 0; height: 20px; width: 20px; padding-left: 0;"
+															title="查询"></i>
+															<i id="agency_clear" class="icon icon-clear"
+															style="background-position: 0 0;padding-top: 0; height: 20px; width: 20px; margin-left: 2px; padding-left: 3px;"
+															title="清除"></i>
+														</td>
+														<td>
+															<div style="display: inline; margin-left: 3px;width:100px;">
+																	<input type="text" disabled style="width: 40px;"
+																			id="agency_id"></input> <label
+																			style="display: inline; margin-left: 3px;"
+																			id="agency_name"></label>
+															</div>
+														</td>
+													</tr>
+												</table>
+											</td>
+										</tr>
+										<tr>
+											<td class="right_align">客户类别&nbsp;:&nbsp;</td>
+											<td colspan="3">
+												<select style="width:80px;">
+													<option></option>
+													<option>国网</option>
+													<option>南网</option>
+													<option>地方</option>
+													<option>海外</option>
+												</select>
+											</td>
+										</tr>
+										<tr>
+											<td class="right_align">客户名称&nbsp;:&nbsp;</td>
+											<td colspan="3">
+													<!-- <input id="input01" class="" type="text" style="width:300px;"> -->
+													<i id="customer_search" class="icon icon-search"
+													style="background-position: 0 0; margin-top: -5px; padding-top: 0; height: 20px; width: 20px; padding-left: 0;"
+													title="查询"></i>
+													<div style="display: inline; margin-left: 3px;">
+															<input type="text" disabled style="width: 300px;"
+																	id="customer_name"></input>
+													</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="right_align">项目名称&nbsp;:&nbsp;</td>
+											<td colspan="3"><input id="input01" class=""
+													type="text" style="margin-bottom:5px;width: 300px;"></td>
+										</tr>
+										<tr>
+											<td class="right_align">预计发货月&nbsp;:&nbsp;</td>
+											<td colspan="3"><input id="test01"  type="text"
+													style="width: 70px; margin-bottom: 3px; ime-mode: disabled"><img src="../../../images/cal.gif" id="imgs" onclick="changeMonth('test01')" />
+											</td>
+										</tr>
+										<tr>
+											<td class="right_align">预计送电月&nbsp;:&nbsp;</td>
+											<td><input id="test02"  type="text"
+													style="width: 70px; margin-bottom: 5px; ime-mode: disabled"><img src="../../../images/cal.gif" id="imgs" onclick="changeMonth('test02')" />
+											</td>
+											<td class="right_align">通电后保证月数&nbsp;:&nbsp;</td>
+											<td><input type="text" style="text-align:right;margin-bottom: 0; width: 60px;"></input>
+											</td>
+										</tr>
+										<tr>
+
+										</tr>
+									</tbody>
+								</table>
+							</td>
+							<td width="40%">
+								<table style="margin-left:30px;">
+										<tbody>
+												<tr>
+														<td class="right_align">投标铜价&nbsp;:&nbsp;</td>
+														<td><input type="text"
+																style="margin-bottom: 5px; width: 150px; text-align: right;"></td>
+												</tr>
+												<tr>
+														<td class="right_align">金额(货币)&nbsp;:&nbsp;</td>
+														<td><input type="text"
+																style="margin-bottom: 5px; width: 150px; text-align: right; ime-mode: disabled">
+																<select style="width: 90px;">
+																		<option>人民币</option>
+																		<option>日元</option>
+														</select></td>
+												</tr>
+												<tr>
+													<td colspan="2"><span>&nbsp;</span></td>
+												</tr>
+												<tr>
+													<td class="right_align">合同总价&nbsp;:&nbsp;</td>
+													<td><input id="input01" class="" disabled type="text"
+															style="width: 150px; text-align: right; ime-mode: disabled">
+													</td>
+												</tr>
+												<tr>
+													<td class="right_align">佣金率&nbsp;:&nbsp;</td>
+													<td><input type="text"
+															style="margin-bottom: 5px; width: 50px; text-align: right; ime-mode: disabled">&nbsp;<label style="display:inline;">%</label>
+													</td>
+												</tr>
+												<tr>
+													<td class="right_align">佣金金额&nbsp;:&nbsp;</td>
+													<td><input type="text" disabled
+															style="margin-bottom: 5px; width: 150px; text-align: right; ime-mode: disabled"></td>
+												</tr>
+												<tr>
+														<td colspan="2">
+
+														</td>
+												</tr>
+										</tbody>
+								</table>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div>
+				<table style="width:70%">
+				<tr>
+					<td>
+						<div>
+							<span style="position: relative; left: 10px; top: 8px; font-size: 14px; background-color: #FFFFFF;">
+								回款比例/预计回款月/预计回款金额&nbsp;:&nbsp;
+							</span>
+							<div style="padding: 20px 10px;height:83px;margin-top: 0px; border: 1px solid #0088CC;">
+									<table style=" margin-left:30px;width:90%">
+											<tr>
+												<td><input id="input01" class="right_align"
+														type="text"
+														style="width: 45px; margin-bottom: 0; ime-mode: disabled">
+														:&nbsp;&nbsp;
+												<td><input id="input01" class="right_align"
+														type="text"
+														style="width: 45px; margin-bottom: 0; ime-mode: disabled">
+														:&nbsp;
+												<td><input id="input01" class="right_align"
+														type="text"
+														style="width: 45px; margin-bottom: 0; ime-mode: disabled">
+														:&nbsp;&nbsp;
+												<td><input id="input01" class="right_align"
+														type="text"
+														style="width: 45px; margin-bottom: 0; ime-mode: disabled">
+														:&nbsp;&nbsp;
+												<td><input id="input01" class="right_align"
+														type="text"
+														style="width: 45px; margin-bottom: 0; ime-mode: disabled">
+														:&nbsp;&nbsp;
+												<td><input id="input01" class="right_align"
+														type="text"
+														style="width: 45px; margin-bottom: 0; ime-mode: disabled">
+											</tr>
+
+											<tr>
+													<td><input id="input07" type="text"
+																	style="margin-bottom: 0; width: 70px; ime-mode: disabled"><img src="../../../images/cal.gif" id="imgs" onclick="changeMonth('input07')" />
+													<td><input id="input02" type="text"
+																	style="margin-bottom: 0; width: 70px; ime-mode: disabled"><img src="../../../images/cal.gif" id="imgs" onclick="changeMonth('input02')" />
+													<td><input id="input03" type="text"
+																	style="margin-bottom: 0; width: 70px; ime-mode: disabled"><img src="../../../images/cal.gif" id="imgs" onclick="changeMonth('input03')" />
+													<td><input id="input04" type="text"
+																	style="margin-bottom: 0; width: 70px; ime-mode: disabled"><img src="../../../images/cal.gif" id="imgs" onclick="changeMonth('input04')" />
+													<td><input id="input05" type="text"
+																	style="margin-bottom: 0; width: 70px; ime-mode: disabled"><img src="../../../images/cal.gif" id="imgs" onclick="changeMonth('input05')" />
+													<td><input id="input06" type="text"
+																			style="margin-bottom: 0; width: 70px; ime-mode: disabled"><img src="../../../images/cal.gif" id="imgs" onclick="changeMonth('input06')" />
+											</tr>
+											<tr>
+												<td><input id="input01" class="right_align"
+														type="text" style="width: 90px; ime-mode: disabled">
+												<td><input id="input01" class="right_align"
+														type="text" style="width: 90px; ime-mode: disabled">
+												<td><input id="input01" class="right_align"
+														type="text" style="width: 90px; ime-mode: disabled">
+												<td><input id="input01" class="right_align"
+														type="text" style="width: 90px; ime-mode: disabled">
+												<td><input id="input01" class="right_align"
+														type="text" style="width: 90px; ime-mode: disabled">
+												<td><input id="input01" class="right_align"
+														type="text" style="width: 90px; ime-mode: disabled">
+											</tr>
+									</table>
+							</div>
+						</div>
+					</td>
+				</tr>
+				</table>
+			</div>
+			<div class="product-tab" style="margin-top:10px;">
+				<ul class="nav nav-tabs" style="width:914px; margin-bottom: 0px;">
+					<li class="active">
+						<a id="li_1" href="#div_list_0" data-toggle="tab">电缆</a>
+					</li>
+					<li class="">
+						<a id="li_2" href="#div_list_1" data-toggle="tab">附件</a>
+					</li>
+				</ul>
+			</div>
+			<div class="tab-content">
+				<div class="div_list tab-pane active" id="div_list_0">
+					<div class="" style="margin:auto;width:860px;">
+						<div >
+							<div id="" style="float: right;">
+								<a id="addProduct" class="icon icon-add" href="javascript:void(0);" title=""
+									style="margin-right: 10px">增加</a>
+							</div>
+							<div style="clear:both;"></div>
+						</div>
+						<div class="" style="width: 855px;">
+							<table class="table table-striped table-bordered table-title" style="background-color:#E4F4CB;margin-bottom: 0px;">
+								<thead>
+									<tr>
+										<th style="width:5%;height:21px">序号</th>
+										<th style="width:12%;">规格型号</th>
+										<th style="width:8%">电压等级</th>
+										<th style="width:10%;">合同数量</th>
+										<th style="width:5%">单位</th>
+										<th style="width:10%;">合同单价</th>
+										<th style="width:15%;">金额</th>
+										<th style="width:20%">备注</th>
+										<th style="width:15%;"></th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+						<div style="overflow-y:auto; padding-right: 5px;height:165px;width:870px;">
+							<div style="width:855px;">
+								<table id="product_list_table" class="table table-striped table-bordered table-body" style="background-color:#E4F4CB;">
+									<tbody>
+										<tr>
+											<td style="width:5%;">1</td>
+											<td style="width:12%;">127/220-2500</td>
+											<td style="width:8%;">20KV</td>
+											<td style="width:10%;" class="right_align">5,645.00</td>
+											<td style="width:5%;text-align:center;" class="">米</td>
+											<td style="width:10%;" class="right_align">54,364.00</td>
+											<td style="width:15%;" class="right_align">122,666,000.00</td>
+											<td style="width:20%;">XX</td>
+											<td style="width:15%;" class="center_td"><a class="icon icon-edit link-hand-dialog" id="update_btn_row" onclick="openEditProductDialog('米')">编辑</a>
+											&nbsp;&nbsp;&nbsp;<a class="icon icon-remove" onclick="deleteContract(this)">删除</a></td>
+										</tr>
+										<tr>
+											<td style="width:5%;">1</td>
+											<td style="width:12%;">127/220-2500</td>
+											<td style="width:8%;">20KV</td>
+											<td style="width:10%;" class="right_align">5,645.00</td>
+											<td style="width:5%;text-align:center;" class="">米</td>
+											<td style="width:10%;" class="right_align">54,364.00</td>
+											<td style="width:15%;" class="right_align">122,666,000.00</td>
+											<td style="width:20%;">XX</td>
+											<td style="width:15%;" class="center_td"><a class="icon icon-edit link-hand-dialog" id="update_btn_row" onclick="openEditProductDialog('米')">编辑</a>
+											&nbsp;&nbsp;&nbsp;<a class="icon icon-remove" onclick="deleteContract(this)">删除</a></td>
+										</tr>
+										<tr>
+											<td style="width:5%;">1</td>
+											<td style="width:12%;">127/220-2500</td>
+											<td style="width:8%;">20KV</td>
+											<td style="width:10%;" class="right_align">5,645.00</td>
+											<td style="width:5%;text-align:center;" class="">米</td>
+											<td style="width:10%;" class="right_align">54,364.00</td>
+											<td style="width:15%;" class="right_align">122,666,000.00</td>
+											<td style="width:20%;">XX</td>
+											<td style="width:15%;" class="center_td"><a class="icon icon-edit link-hand-dialog" id="update_btn_row" onclick="openEditProductDialog('米')">编辑</a>
+											&nbsp;&nbsp;&nbsp;<a class="icon icon-remove" onclick="deleteContract(this)">删除</a></td>
+										</tr>
+										<tr>
+											<td style="width:5%;">1</td>
+											<td style="width:12%;">127/220-2500</td>
+											<td style="width:8%;">20KV</td>
+											<td style="width:10%;" class="right_align">5,645.00</td>
+											<td style="width:5%;text-align:center;" class="">米</td>
+											<td style="width:10%;" class="right_align">54,364.00</td>
+											<td style="width:15%;" class="right_align">122,666,000.00</td>
+											<td style="width:20%;">XX</td>
+											<td style="width:15%;" class="center_td"><a class="icon icon-edit link-hand-dialog" id="update_btn_row" onclick="openEditProductDialog('米')">编辑</a>
+											&nbsp;&nbsp;&nbsp;<a class="icon icon-remove" onclick="deleteContract(this)">删除</a></td>
+										</tr>
+										<tr>
+											<td style="width:5%;">1</td>
+											<td style="width:12%;">127/220-2500</td>
+											<td style="width:8%;">20KV</td>
+											<td style="width:10%;" class="right_align">5,645.00</td>
+											<td style="width:5%;text-align:center;" class="">米</td>
+											<td style="width:10%;" class="right_align">54,364.00</td>
+											<td style="width:15%;" class="right_align">122,666,000.00</td>
+											<td style="width:20%;">XX</td>
+											<td style="width:15%;" class="center_td"><a class="icon icon-edit link-hand-dialog" id="update_btn_row" onclick="openEditProductDialog('米')">编辑</a>
+											&nbsp;&nbsp;&nbsp;<a class="icon icon-remove" onclick="deleteContract(this)">删除</a></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="div_list tab-pane" id="div_list_1">
+				<div class="" style="margin:auto;width:860px;">
+					<div >
+						<div id="" style="float: right;">
+							<a class="icon icon-add" href="javascript:void(0);" title=""
+								style="margin-right: 10px" onclick="openAddProductDialog('项')">增加</a>
+						</div>
+						<div style="clear:both;"></div>
+					</div>
+					<div class="" style="width: 855px;">
+						<table class="table table-striped table-bordered table-title" style="background-color:#E4F4CB;margin-bottom: 0px;">
+							<thead>
+								<tr>
+									<th style="width:5%;height:21px">序号</th>
+									<th style="width:12%;">规格型号</th>
+									<th style="width:8%">电压等级</th>
+									<th style="width:10%;">合同数量</th>
+									<th style="width:5%;">单位</th>
+									<th style="width:10%;">合同单价</th>
+									<th style="width:15%;">金额</th>
+									<th style="width:20%">备注</th>
+									<th style="width:15%;"></th>
+								</tr>
+							</thead>
+						</table>
+					</div>
+					<div style="overflow-y:auto; padding-right: 5px;height:165px;width:870px;">
+						<div style="width:855px;">
+							<table id="product_list_table" class="table table-striped table-bordered table-body" style="background-color:#E4F4CB;">
+								<tbody>
+									<tr>
+										<td style="width:5%;">1</td>
+										<td style="width:12%;">127/220-2500</td>
+										<td style="width:8%;">20KV</td>
+										<td style="width:10%;" class="right_align">5,645.00</td>
+										<td style="width:5%;text-align:center;" class="">项</td>
+										<td style="width:10%;" class="right_align">54,364.00</td>
+										<td style="width:15%;" class="right_align">122,666,000.00</td>
+										<td style="width:20%;">XX</td>
+										<td style="width:15%;" class="center_td"><a class="icon icon-edit link-hand-dialog" id="update_btn_row" onclick="openEditProductDialog('项')">编辑</a>
+										&nbsp;&nbsp;&nbsp;<a class="icon icon-remove" onclick="deleteContract(this)">删除</a></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			</div>
+		</div>
+	</div>
+	<div class="bottom_block">
+		<a class="btn btn-primary btn-middle" style="" href="orderConfirm.html">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;确认&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+		<a class="btn btn-info btn-middle-aft" href="orderSearch.html">返回</a>
+	</div>
+</div>
+
+<!-- 代理商dialog -->
+<div id="agency_dialog" style="display:none;">
+		<div style="width:100%;border-bottom: 1px solid #0088CC;">
+			<div style="color:#0060A4;display:inline;font-size:14px;">业务员&nbsp;:&nbsp;<span style="margin-left:3px;">李四</span></div>
+				<span style="float:right">
+						<input id="keyword" class="" type="text"
+								value="" title="" style="width: 180px;">
+						<button class="btn search-btn-easy btn-mini" type="button"
+								onclick="">
+								<i class="icon-search_mini"></i>
+						</button>
+				</span>
+				<div style="clear:both;"></div>
+		</div>
+
+		<div class = "search-result">
+			<div id="pop_table" style="padding:10px;margin-top:-10px;">
+				<table class="table table-striped table-bordered"
+						style="background-color: #E4F4CB;">
+						<thead>
+							<tr>
+								<th style="width:25%;height:25px;"><a class="sort" style="color:#0060A4">代理商编号<span class="caret"></span></a></th>
+								<th width="50%"><a class="sort" style="color:#0060A4">代理商名称</a></th>
+								<th width="25%"><a class="sort" style="color:#0060A4">业务员</a></th>
+							</tr>
+						</thead>
+
+						<tbody>
+							<tr>
+								<td>0002</td>
+								<td>某市某某代理商</td>
+								<td>张三</td>
+							</tr>
+							<tr>
+								<td>0002</td>
+								<td>某市某某代理商</td>
+								<td>张三</td>
+							</tr>
+							<tr>
+								<td>0002</td>
+								<td>某市某某代理商</td>
+								<td>张三</td>
+							</tr>
+							<tr>
+								<td>0002</td>
+								<td>某市某某代理商</td>
+								<td>张三</td>
+							</tr>
+							<tr>
+								<td>0002</td>
+								<td>某市某某代理商</td>
+								<td>张三</td>
+							</tr>
+							<tr>
+								<td>0002</td>
+								<td>某市某某代理商</td>
+								<td>张三</td>
+							</tr>
+							<tr>
+								<td>0002</td>
+								<td>某市某某代理商</td>
+								<td>张三</td>
+							</tr>
+							<tr>
+								<td>0002</td>
+								<td>某市某某代理商</td>
+								<td>张三</td>
+							</tr>
+							<tr>
+								<td>0002</td>
+								<td>某市某某代理商</td>
+								<td>张三</td>
+							</tr>
+							<tr>
+								<td>0002</td>
+								<td>某市某某代理商</td>
+								<td>张三</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+	<div id="pagination" style="align:center;margin-top:-10px;">
+		<div id='project_pagination' class="pagination pagination-centered">
+			<div class="pagination">
+					<ul>
+						<li class="disabled"><a href="#">«</a></li>
+						<li class="active"><a href="#">1</a></li>
+						<li><a href="#" style="color: #0060A4">2</a></li>
+						<li><a href="#" style="color: #0060A4">3</a></li>
+						<li><a href="#" style="color: #0060A4">4</a></li>
+						<li><a href="#" style="color: #0060A4">»</a></li>
+					</ul>
+					<ul>
+						<li><span>(1-10/38)</span></li>
+					</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="product_dialog" style="display:none">
+	<div class="">
+		<div style="padding:10px 0;">
+			<div style="width:100%;">
+				<table class="table-edit table-bordered table-striped">
+					<tr>
+						<td width="20%"  class="right_align">序号&nbsp;:&nbsp;</td>
+						<td width="80%"><input type="text" class="must" style="width:60px;ime-mode: disabled" id="order" value=""></td>
+					</tr>
+					<tr>
+						<td class="right_align">规格型号&nbsp;:&nbsp;</td>
+						<td><input type="text" class="must" style="width:180px;" id="goods_name" value=""></td>
+					</tr>
+					<tr>
+						<td class="right_align">电压等级&nbsp;:&nbsp;</td>
+						<td><input type="text" class="must" style="width:180px;" id="goods_name" value=""></td>
+					</tr>
+					<tr>
+						<td class="right_align">合同数量&nbsp;:&nbsp;</td>
+						<td><input type="text" class="must right_align" style="width:100px;ime-mode: disabled" id="contract_number" value="">&nbsp;<span id="num">米</span></td>
+					</tr>
+					<tr>
+						<td class="right_align">金额&nbsp;:&nbsp;</td>
+						<td><input type="text" class="must right_align" style="width:180px;ime-mode: disabled" id="contract_sum" value=""></td>
+					</tr>
+					<tr>
+						<td class="right_align">合同单价&nbsp;:&nbsp;</td>
+						<td><input type="text" class="right_align" disabled style="width:180px;ime-mode: disabled" id="contract_price" value=""></td>
+					</tr>
+					<tr>
+						<td class="right_align">备注&nbsp;:&nbsp;</td>
+						<td><input type="text" class="" style="width:400px;" id="contract_price" value=""></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+	<!-- 业务员选择pop -->
+	<div id="user_dialog" style="display: none;">
+		<div style="width: 100%; border-bottom: 1px solid #0088CC;">
+			<span style="float: right"> <input id="keyword" class=""
+				type="text" value="" title="" style="width: 180px;">
+				<button class="btn search-btn-easy btn-mini" type="button"
+					onclick="">
+					<i class="icon-search_mini"></i>
+				</button>
+			</span>
+			<div style="clear: both;"></div>
+		</div>
+
+		<div class="search-result">
+			<div id="pop_table_user" style="padding: 10px; margin-top: -10px;">
+				<table class="table table-striped table-bordered"
+					style="background-color: #E4F4CB;">
+					<thead>
+						<tr>
+							<th style="width: 15%; height: 25px;"><a
+								class="sort" style="color: #0060A4">编号<span
+									class="caret"></span></a></th>
+							<th><a class="sort" style="color: #0060A4">业务员</a></th>
+							<th width="25%"><a class="sort"
+								style="color: #0060A4">联系电话</a></th>
+						</tr>
+					</thead>
+
+					<tbody>
+						<tr>
+							<td>0002</td>
+							<td>张三</td>
+
+							<td>0531-88881234</td>
+						</tr>
+						<tr>
+							<td>0002</td>
+							<td>张三</td>
+
+							<td>0531-88881234</td>
+						</tr>
+						<tr>
+							<td>0002</td>
+							<td>张三</td>
+
+							<td>0531-88881234</td>
+						</tr>
+						<tr>
+							<td>0002</td>
+							<td>张三</td>
+
+							<td>0531-88881234</td>
+						</tr>
+						<tr>
+							<td>0002</td>
+							<td>张三</td>
+
+							<td>0531-88881234</td>
+						</tr>
+						<tr>
+							<td>0002</td>
+							<td>张三</td>
+
+							<td>0531-88881234</td>
+						</tr>
+						<tr>
+							<td>0002</td>
+							<td>张三</td>
+
+							<td>0531-88881234</td>
+						</tr>
+						<tr>
+							<td>0002</td>
+							<td>张三</td>
+
+							<td>0531-88881234</td>
+						</tr>
+						<tr>
+							<td>0002</td>
+							<td>张三</td>
+
+							<td>0531-88881234</td>
+						</tr>
+						<tr>
+							<td>0002</td>
+							<td>张三</td>
+
+							<td>0531-88881234</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div id="pagination" style="align: center; margin-top: -10px;">
+			<div id='project_pagination' class="pagination pagination-centered">
+				<div class="pagination">
+					<ul>
+						<li class="disabled"><a href="#">«</a></li>
+						<li class="active"><a href="#">1</a></li>
+						<li><a href="#" style="color: #0060A4">2</a></li>
+						<li><a href="#" style="color: #0060A4">3</a></li>
+						<li><a href="#" style="color: #0060A4">4</a></li>
+						<li><a href="#" style="color: #0060A4">»</a></li>
+					</ul>
+					<ul>
+						<li><span>(1-10/38)</span></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+<!-- 业务员选择pop -->
+	<div id="customer_dialog" style="display: none;">
+		<div style="width: 100%; border-bottom: 1px solid #0088CC;">
+			<div style="color:#0060A4;display:inline;font-size:14px;">客户类别&nbsp;:&nbsp;<span style="margin-left:3px;">国网</span></div>
+			<span style="float: right"> <input id="keyword" class=""
+				type="text" value="" title="" style="width: 180px;">
+				<button class="btn search-btn-easy btn-mini" type="button"
+					onclick="">
+					<i class="icon-search_mini"></i>
+				</button>
+			</span>
+			<div style="clear: both;"></div>
+		</div>
+
+		<div class="search-result">
+			<div id="pop_table_customer"
+				style="padding: 10px; margin-top: -10px;">
+				<table class="table table-striped table-bordered"
+					style="background-color: #E4F4CB;">
+					<thead>
+						<tr>
+							<th style="width: 15%; height: 25px;"><a
+								class="sort" style="color: #0060A4">客户编号<span
+									class="caret"></span></a></th>
+							<th width="40%"><a class="sort"
+								style="color: #0060A4">客户名称</a></th>
+							<th style="width: 32%;"><a class="sort"
+								style="color: #0060A4">联系方式</a></th>
+						</tr>
+					</thead>
+
+					<tbody>
+						<tr>
+							<td>0002</td>
+							<td>某市国家电网</td>
+							<td>123456</td>
+						</tr>
+						<tr>
+							<td>0002</td>
+							<td>某市国家电网</td>
+							<td>123456</td>
+						</tr>
+						<tr>
+							<td>0002</td>
+							<td>某市国家电网</td>
+							<td>123456</td>
+						</tr>
+						<tr>
+							<td>0002</td>
+							<td>某市国家电网</td>
+							<td>国家电网</td>
+						</tr>
+						<tr>
+							<td>0002</td>
+							<td>某市国家电网</td>
+							<td>123456</td>
+						</tr>
+						<tr>
+							<td>0002</td>
+							<td>某市国家电网</td>
+							<td>123456</td>
+						</tr>
+						<tr>
+							<td>0002</td>
+							<td>某市国家电网</td>
+							<td>123456</td>
+						</tr>
+						<tr>
+							<td>0002</td>
+							<td>某市国家电网</td>
+							<td>123456</td>
+						</tr>
+						<tr>
+							<td>0002</td>
+							<td>某市国家电网</td>
+							<td>123456</td>
+						</tr>
+						<tr>
+							<td>0002</td>
+							<td>某市国家电网</td>
+							<td>123456</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div id="pagination" style="align: center; margin-top: -10px;">
+			<div id='project_pagination' class="pagination pagination-centered">
+				<div class="pagination">
+					<ul>
+						<li class="disabled"><a href="#">«</a></li>
+						<li class="active"><a href="#">1</a></li>
+						<li><a href="#" style="color: #0060A4">2</a></li>
+						<li><a href="#" style="color: #0060A4">3</a></li>
+						<li><a href="#" style="color: #0060A4">4</a></li>
+						<li><a href="#" style="color: #0060A4">»</a></li>
+					</ul>
+					<ul>
+						<li><span>(1-10/38)</span></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+<div id="dateSelectPop" style="display:none">
+	<div class="modal-body">
+		<table style="background: none repeat scroll 0% 0% rgb(234, 247, 239); width: 100%;">
+			<tr>
+				<td>
+					<div>
+						<table style="width: 100%;text-align: center;" class="sel_table_year">
+							<tr>
+								<td id="year_back" style="cursor: pointer;"><span>&lt;</span></td>
+								<td id="year_next" style="cursor: pointer;"><span>&gt;</span></td>
+							</tr>
+							<tr>
+								<td><div id="sel_year1" class="p_sel_year"></div></td>
+								<td><div id="sel_year6" class="p_sel_year"></div></td>
+							</tr>
+							<tr>
+								<td><div id="sel_year2" class="p_sel_year"></div></td>
+								<td><div id="sel_year7" class="p_sel_year"></div></td>
+							</tr>
+							<tr>
+								<td><div id="sel_year3" class="p_sel_year"></div></td>
+								<td><div id="sel_year8" class="p_sel_year"></div></td>
+							</tr>
+							<tr>
+								<td><div id="sel_year4" class="p_sel_year"></div></td>
+								<td><div id="sel_year9" class="p_sel_year"></div></td>
+							</tr>
+							<tr>
+								<td><div id="sel_year5" class="p_sel_year"></div></td>
+								<td><div id="sel_year10" class="p_sel_year"></div></td>
+							</tr>
+						</table>
+					</div>
+				</td>
+				<td style="background-color: rgb(0, 143, 32); margin-right: 5px;"></td>
+				<td>
+					<div>
+						<table style="width: 100%;text-align: center;" class="sel_table_month">
+							<tr>
+								<td><div id="sel_month1" class="p_sel_month">01<span class="sel_month_unit">月</span></div></td>
+								<td><div id="sel_month7" class="p_sel_month">07<span class="sel_month_unit">月</span></div></td>
+							</tr>
+							<tr>
+								<td><div id="sel_month2" class="p_sel_month">02<span class="sel_month_unit">月</span></div></td>
+								<td><div id="sel_month8" class="p_sel_month">08<span class="sel_month_unit">月</span></div></td>
+							</tr>
+							<tr>
+								<td><div id="sel_month3" class="p_sel_month">03<span class="sel_month_unit">月</span></div></td>
+								<td><div id="sel_month9" class="p_sel_month">09<span class="sel_month_unit">月</span></div></td>
+							</tr>
+							<tr>
+								<td><div id="sel_month4" class="p_sel_month">04<span class="sel_month_unit">月</span></div></td>
+								<td><div id="sel_month10" class="p_sel_month">10<span class="sel_month_unit">月</span></div></td>
+							</tr>
+							<tr>
+								<td><div id="sel_month5" class="p_sel_month">05<span class="sel_month_unit">月</span></div></td>
+								<td><div id="sel_month11" class="p_sel_month">11<span class="sel_month_unit">月</span></div></td>
+							</tr>
+							<tr>
+								<td><div id="sel_month6" class="p_sel_month">06<span class="sel_month_unit">月</span></div></td>
+								<td><div id="sel_month12" class="p_sel_month">12<span class="sel_month_unit">月</span></div></td>
+							</tr>
+						</table>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>
+
+
+</body>
+</html>

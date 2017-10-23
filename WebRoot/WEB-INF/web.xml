@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.4" 
+	xmlns="http://java.sun.com/xml/ns/j2ee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee 
+	http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+	<error-page>
+	<error-code>404</error-code>
+	<location>/pages/errpage/404errpage.jsp</location>
+	</error-page>
+  <servlet>
+    <servlet-name>LoginAction</servlet-name>
+    <servlet-class>sym.common.action.LoginAction</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>ResetPasswordAction</servlet-name>
+    <servlet-class>sym.common.action.ResetPasswordAction</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>UserAdd</servlet-name>
+    <servlet-class>sym.common.action.UserAdd</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>SelectAll</servlet-name>
+    <servlet-class>sym.common.action.SelectAll</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>AdminCustomerAction</servlet-name>
+    <servlet-class>sym.common.action.AdminCustomerAction</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>AdminCurrencyAction</servlet-name>
+    <servlet-class>sym.common.action.AdminCurrencyAction</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>AdminAgencyPageListAction</servlet-name>
+    <servlet-class>sym.common.action.AdminAgencyPageListAction</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>OrderAction</servlet-name>
+    <servlet-class>sym.common.action.OrderAction</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>AdminUserAction</servlet-name>
+    <servlet-class>sym.common.action.AdminUserAction</servlet-class>
+  </servlet>
+
+
+
+
+
+
+
+
+
+  <servlet-mapping>
+    <servlet-name>LoginAction</servlet-name>
+    <url-pattern>/loginAction</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ResetPasswordAction</servlet-name>
+    <url-pattern>/ResetPasswordAction</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>UserAdd</servlet-name>
+    <url-pattern>/servlet/UserAdd</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>SelectAll</servlet-name>
+    <url-pattern>/servlet/SelectAll</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AdminCustomerAction</servlet-name>
+    <url-pattern>/servlet/AdminCustomerAction</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AdminCurrencyAction</servlet-name>
+    <url-pattern>/servlet/AdminCurrencyAction</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AdminAgencyPageListAction</servlet-name>
+    <url-pattern>/servlet/AdminAgencyPageListAction</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>OrderAction</servlet-name>
+    <url-pattern>/OrderAction</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AdminUserAction</servlet-name>
+    <url-pattern>/servlet/AdminUserAction</url-pattern>
+  </servlet-mapping>
+
+  
+  <!-- 配置字符编码集过滤器 -->
+  	<filter>
+		<filter-name>CharsetEncodingFilter</filter-name>
+		<filter-class>sym.common.filters.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>CharsetEncodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+  
+</web-app>
